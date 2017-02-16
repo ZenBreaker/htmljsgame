@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head id = "headDiv">
+  <meta charset="UTF-8">
+  <title>boopydoopydinky</title>
+
+</head>
+
+<body id = "bodyDiv">
+  <div id = "wrapperDiv">
+
+  </div>
+
+  <script>
+
+    var wapper = document.getElementById("wrapperDiv")
+    var info = document.createElement("div")
+    var canvas = document.createElement("canvas")
+    var menu = document.createElement("div")
+    var ball = document.createElement("img")
+    var mouseDiv = document.createElement("div")
+
+    var menuArray = []
+    var infoArray = []
+
+    var ctx = canvas.getContext('2d')
+
+    var balls = []
+
+    makeHTML()
+    createMenuTiles()
+    makeCode()
+
+    function makeHTML(){
+
+
+
+
+      wapper.appendChild(info)
+
+      wapper.appendChild(canvas)
+      wapper.appendChild(menu)
+
+      wapper.style.background = "white"
+      //wapper.margin = "auto"
+
+      info.id = 'info'
+      info.style.background = "green"
+      info.style.width = "900px"
+      info.style.height = "100px"
+      info.style.position="absolute"
+      info.style.top=0+"px"
+      info.style.left=0+"px"
+      //info.style.margin = "auto"
+
+      canvas.setAttribute('id','canv')
+      canvas.setAttribute('style',' position: absolute; top: '+info.style.height+'; left: 0px;')
+      canvas.width = 900
+      canvas.height = 900
+//width: 900px; height: 900px;
+      menu.id = 'menu'
+      menu.style.background = "yellow"
+      menu.style.width = "100px"
+      menu.style.height = "900px"
+      menu.style.position = "absolute"
+      menu.style.top = 100+"px"
+      menu.style.left = 900+"px"
+      //menu.style.float="right"
+
+      ball.id = "ball"
+      mouseDiv.style.position = "absolute"
+      mouseDiv.x = wrapperDiv.style.width/2
+      mouseDiv.y = wrapperDiv.style.height/2
+      mouseDiv.style.width = "900px"
+      mouseDiv.style.height = "900px"
+
+    }
+
+    function createMenuTiles(){
+      for(var i = 0; i < 9; i++){
+        infoArray[i] = document.createElement("div")
+        info.appendChild(infoArray[i])
+        infoArray[i].style.background= "blue"
+        infoArray[i].style.width = "50px"
+        infoArray[i].style.height = "50px"
+        infoArray[i].style.position = "absolute"
+        infoArray[i].style.top = 25+"px"
+        infoArray[i].style.left = (100*i)+25+"px"
+      }
+
+      for(var j=0; j < 5; j++){
+        var imageTower = document.createElement("img")
+        var imageTowerPath = "images/towers/t"+j+".png"
+
+        imageTower.src = imageTowerPath
+        imageTower.draggable=false
+        imageTower.mozuserselect = "none"
+
+        imageTower.addEventListener('mousedown', mousedown, false)
+        imageTower.addEventListener('mouseout', mouseout, false)
+        imageTower.addEventListener('mouseover', mouseover, false)
+
+        var imageDiv = document.createElement("div")
+        imageDiv.style.background = "red"
+        imageDiv.id = "menuElementImageDiv"+j
+        imageDiv.style.width = "100px"
+        imageDiv.style.height = "100px"
+        imageDiv.style.position = "absolute"
+        imageDiv.style.top = 0 + "px"
+        imageDiv.style.left = 0 + "px"
+
+        menuArray[j] = document.createElement("div")
+
+        menu.appendChild(menuArray[j])
+
+        menuArray[j].style.background = "red"
+        menuArray[j].id = "menuElement"+j
+        menuArray[j].style.width = "100px"
+        menuArray[j].style.height = "100px"
+        menuArray[j].style.position = "absolute"
+        menuArray[j].style.top = (175 * j) + 50 + "px"
+        menuArray[j].style.left = 0 + "px"
+
+        menuArray[j].appendChild(imageTower)
+
+        imageTower.appendChild(imageDiv)
+      }
+    }
+
+    function makeCode(){
+
+
+      function random(min,max) {
+        var num = Math.floor(Math.random()*(max-min)) + min
+        return num
+      }
+
+      function Ball() {
+        this.x = random(0,canvas.width)
+        this.y = random(0,canvas.height)
+        this.velX = random(-2,2)
+        this.velY = random(-2,2)
+        this.size = 25
+        this.imag = new Image()
+        this.imag.src = 'ball2.png'
+        }
+
+      Ball.prototype.draw = function() {
+        ctx.drawImage(this.imag, this.x-100, this.y-100,200, 200)
+      }
+
+      Ball.prototype.update = function() {
+        if((this.x + this.size) >= canvas.width) {
+          this.velX = -(this.velX)
+        }
+
+        if((this.x - this.size) <= 0) {
+          this.velX = -(this.velX)
+        }
+
+        if((this.y + this.size) >= canvas.height) {
+          this.velY = -(this.velY)
+        }
+
+        if((this.y - this.size) <= 0) {
+          this.velY = -(this.velY)
+        }
+
+        this.x += this.velX
+        this.y += this.velY
+      }
+
+      function loop() {
+        ctx.fillStyle = "0,0,0,0.25"
+        ctx.fillRect(0,0,canvas.width,canvas.height)
+
+        while(balls.length < 25) {
+          var ball = new Ball()
+          balls.push(ball)
+        }
+
+        for(i = 0; i < balls.length; i++) {
+          balls[i].draw()
+          balls[i].update()
+        }
+
+        requestAnimationFrame(loop)
+      }
+
+      loop()
+    }
+
+    function mouseover() {
+      this.parentElement.style.background = "white"
+    }
+
+    function mouseout() {
+      this.parentElement.style.background = "red"
+    }
+
+    function mousedown() {
+      this.parentElement.style.background = "green"
+      //this.addEventListener("onmousemove", mousemove, false)
+
+    }
+
+    function mousemove(event){
+
+    }
+
+    /*
+
+    function update(){
+      await sleep(100)
+      update()
+
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    update()
+    */
+  </script>
+  <img src="ball.png" alt="HTML5 Icon">
+</body>
+
+</html>
